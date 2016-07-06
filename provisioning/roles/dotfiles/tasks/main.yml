@@ -1,0 +1,67 @@
+---
+- name: search path zsh
+  command: >
+    which zsh
+  register: which_zsh
+  ignore_errors: True
+
+- debug: msg="{{which_zsh.stdout}}"
+
+#
+## login shell settings, you will be ased user's password when system switches to zsh.
+#
+          
+- name: grep shells
+  shell: >
+    cat /etc/shells | grep "{{which_zsh.stdout}}"
+  register: grep_shells 
+  ignore_errors: True
+
+- debug: msg="{{grep_shells}}"
+  when: grep_shells.rc == 0
+
+- name: Checkout my dotfiles
+  git: 
+    repo: https://github.com/kocchi/dotfiles.git
+    dest: ~/dotfiles
+
+- name: Clone oh my zsh repo
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: ~/.oh-my-zsh
+
+- name: remove standard dotfiles
+  file:
+    path: ~/{{ item }}
+    state: absent
+  with_items:
+    - .zshrc
+    - .vimrc
+    - .vim
+
+- name: Create symlinks
+  file:
+    src: ~/dotfiles/dot.{{ item }}
+    dest: ~/.{{ item }}
+    state: link
+    force: yes
+  with_items:
+    - tmux.conf
+    - zshrc
+    - vimrc
+    - vim
+
+- name: append shells
+  shell: >
+    echo {{which_zsh.stdout}} >> /etc/shells
+  when: grep_shells.rc != 0
+
+- name: notify please input password
+  shell: >
+    osascript -e 'display notification "Prease input password in terminal" with title "osx-provisioning"'
+- name: change login shell
+  shell: >
+    chpass -s {{which_zsh.stdout}}
+  register: result
+  until: result.rc == 0
+  retries: 3

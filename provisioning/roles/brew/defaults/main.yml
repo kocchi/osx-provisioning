@@ -1,0 +1,16 @@
+---
+homebrew_repositories: []
+
+homebrew_packages:
+  - ag
+  - autojump
+  - macvim
+  - node
+  - peco
+  - tig
+  - tmux
+  - tree
+  - vim
+  - zsh
+  - zsh-completions
+  - zsh-syntax-highlighting

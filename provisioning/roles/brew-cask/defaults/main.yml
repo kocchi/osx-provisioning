@@ -1,0 +1,14 @@
+homebrew_cask_packages:
+  - iterm2
+  - google-japanese-ime
+  - java
+  - virtualbox
+  - packer
+  - consul
+  - vault
+  - dockertoolbox
+  - macvim
+  - slack
+  - android-studio
+  - intellij-idea
+  - atom
