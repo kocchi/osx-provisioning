@@ -4,9 +4,8 @@
   sudo: no
   pre_tasks:
     - stat: path=~/.ssh
-      register: ssh 
+      register: ssh
   roles:
-    - iterm
     # App Installations
     - brew
     - brew-cask
